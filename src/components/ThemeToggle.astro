@@ -1,0 +1,47 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<button
+  type="button"
+  class="icon-btn"
+  id="theme-toggle"
+  aria-label={t('theme.toggle')}
+  title={t('theme.toggle')}
+>
+  <svg class="theme-toggle__sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  </svg>
+  <svg class="theme-toggle__moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+</button>
+
+<style>
+  .theme-toggle__moon { display: none; }
+  :global(:root[data-theme="dark"]) .theme-toggle__sun  { display: none; }
+  :global(:root[data-theme="dark"]) .theme-toggle__moon { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme])) .theme-toggle__sun  { display: none; }
+    :global(:root:not([data-theme])) .theme-toggle__moon { display: block; }
+  }
+</style>
+
+<script>
+  // Light/dark toggle. The initial theme is set inline in BaseLayout so the
+  // first paint already matches the user's preference (no flash).
+  const btn = document.getElementById('theme-toggle');
+  btn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const current =
+      root.dataset.theme ??
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch { /* storage disabled */ }
+  });
+</script>

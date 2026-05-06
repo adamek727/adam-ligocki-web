@@ -1,0 +1,56 @@
+---
+import PageLayout from '../../../../layouts/PageLayout.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import { allLangs, useTranslations, type Lang } from '../../../../i18n/utils';
+import { getBlogPosts, getAllTags, entrySlug } from '../../../../lib/content';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of allLangs) {
+    const tags = await getAllTags(lang);
+    const posts = await getBlogPosts(lang);
+    for (const tag of tags) {
+      const matching = posts.filter((p) =>
+        p.data.tags.some((t) => t.toLowerCase() === tag.toLowerCase()),
+      );
+      paths.push({
+        params: { lang, tag: tag.toLowerCase() },
+        props: { tag, posts: matching },
+      });
+    }
+  }
+  return paths;
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const { tag, posts } = Astro.props as {
+  tag: string;
+  posts: Awaited<ReturnType<typeof getBlogPosts>>;
+};
+const t = useTranslations(lang);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const postHref = (slug: string) => `${base}/${lang}/blog/${slug}`;
+const blogHref = `${base}/${lang}/blog`;
+---
+
+<PageLayout title={`${t('tag.title')}: ${tag}`} container="narrow">
+  <p style="margin-bottom: var(--sp-5);">
+    <a href={blogHref}>{t('tag.back')}</a>
+  </p>
+
+  <ul class="post-list">
+    {posts.map((post) => (
+      <li>
+        <PostCard
+          title={post.data.title}
+          href={postHref(entrySlug(post.id))}
+          date={post.data.pubDate}
+          description={post.data.description}
+          tags={post.data.tags}
+          lang={lang}
+        />
+      </li>
+    ))}
+  </ul>
+</PageLayout>

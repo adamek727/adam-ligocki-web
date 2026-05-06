@@ -1,0 +1,25 @@
+# GitLab Pages deployment.
+#
+# Kept alongside the GitHub Actions workflow so the project can be mirrored to
+# a GitLab repository without changes. GitLab serves Pages from the `public/`
+# directory, so the build output is moved there in the deploy step.
+image: node:20
+
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  variables:
+    SITE_URL: "https://$CI_PROJECT_NAMESPACE.gitlab.io"
+    SITE_BASE: "/$CI_PROJECT_NAME"
+  script:
+    - npm ci
+    - npm run build
+    - rm -rf public
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

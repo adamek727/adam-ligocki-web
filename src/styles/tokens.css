@@ -1,0 +1,120 @@
+/*
+ * Design tokens. The single source of truth for the visual identity.
+ *
+ * To re-skin the entire site, change values in this file. No other CSS file
+ * should hard-code colors, spacing or typography — only references to vars
+ * defined here.
+ */
+
+:root {
+  /* ---- Typography ---------------------------------------------------- */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+  --font-serif: Georgia, "Times New Roman", serif;
+
+  --fs-xs:   0.8125rem;   /* 13px */
+  --fs-sm:   0.9375rem;   /* 15px */
+  --fs-base: 1.0625rem;   /* 17px */
+  --fs-md:   1.1875rem;   /* 19px */
+  --fs-lg:   1.5rem;      /* 24px */
+  --fs-xl:   2rem;        /* 32px */
+  --fs-2xl:  2.75rem;     /* 44px */
+  --fs-3xl:  3.5rem;      /* 56px */
+
+  --lh-tight: 1.2;
+  --lh-snug:  1.4;
+  --lh-base:  1.65;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semibold: 600;
+  --fw-bold:    700;
+
+  /* ---- Spacing scale (8px base) ------------------------------------- */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.5rem;
+  --sp-6:  2rem;
+  --sp-7:  3rem;
+  --sp-8:  4rem;
+  --sp-9:  6rem;
+
+  /* ---- Layout ------------------------------------------------------- */
+  --container-narrow: 42rem;
+  --container-base:   54rem;
+  --container-wide:   72rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  --border-width: 1px;
+
+  /* ---- Motion ------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+
+  /* ---- Light theme (default) ---------------------------------------- */
+  color-scheme: light;
+  --bg:           #ffffff;
+  --bg-elevated:  #f7f7f5;
+  --bg-subtle:    #f1f1ee;
+  --fg:           #111213;
+  --fg-muted:     #555a60;
+  --fg-subtle:    #80868e;
+  --border:       #e3e3df;
+  --border-strong:#cfcfca;
+  --accent:       #2b6cb0;
+  --accent-hover: #1f4f86;
+  --accent-fg:    #ffffff;
+  --code-bg:      #f4f4f0;
+  --selection-bg: #d8e4f4;
+  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md:    0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:           #0f1113;
+  --bg-elevated:  #16191c;
+  --bg-subtle:    #1c2024;
+  --fg:           #e6e8ea;
+  --fg-muted:     #a3a8ae;
+  --fg-subtle:    #707680;
+  --border:       #262a2f;
+  --border-strong:#3a3f46;
+  --accent:       #6aa4e8;
+  --accent-hover: #8cbcf2;
+  --accent-fg:    #0f1113;
+  --code-bg:      #16191c;
+  --selection-bg: #2a3a52;
+  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md:    0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* When the user has not chosen a theme, follow the system preference. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg:           #0f1113;
+    --bg-elevated:  #16191c;
+    --bg-subtle:    #1c2024;
+    --fg:           #e6e8ea;
+    --fg-muted:     #a3a8ae;
+    --fg-subtle:    #707680;
+    --border:       #262a2f;
+    --border-strong:#3a3f46;
+    --accent:       #6aa4e8;
+    --accent-hover: #8cbcf2;
+    --accent-fg:    #0f1113;
+    --code-bg:      #16191c;
+    --selection-bg: #2a3a52;
+    --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md:    0 6px 24px rgba(0, 0, 0, 0.4);
+  }
+}

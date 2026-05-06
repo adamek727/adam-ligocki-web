@@ -1,0 +1,8 @@
+/*
+ * Single CSS entrypoint imported by the base layout.
+ * Order matters — tokens must come first.
+ */
+@import "./tokens.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./components.css";

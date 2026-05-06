@@ -1,0 +1,65 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { getLangFromUrl, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+}
+
+const { title, description, pubDate, updatedDate, tags = [] } = Astro.props;
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const fmt = (d: Date) =>
+  new Intl.DateTimeFormat(lang === 'cs' ? 'cs-CZ' : 'en-GB', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(d);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const blogHref = `${base}/${lang}/blog`;
+const tagHref = (tag: string) =>
+  `${base}/${lang}/blog/tags/${encodeURIComponent(tag.toLowerCase())}`;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="container container--narrow section">
+    <header class="post-header">
+      <p class="post-header__meta">
+        <time datetime={pubDate.toISOString()}>{t('post.published')} {fmt(pubDate)}</time>
+        {updatedDate && (
+          <>
+            {' · '}
+            <time datetime={updatedDate.toISOString()}>
+              {t('post.updated')} {fmt(updatedDate)}
+            </time>
+          </>
+        )}
+      </p>
+      <h1>{title}</h1>
+      {description && <p class="muted" style="font-size: var(--fs-md);">{description}</p>}
+    </header>
+
+    <div class="prose stack">
+      <slot />
+    </div>
+
+    {tags.length > 0 && (
+      <footer style="margin-top: var(--sp-7);">
+        <p class="post-header__meta">{t('post.tagged')}</p>
+        <p class="cluster">
+          {tags.map((tag) => <a class="tag" href={tagHref(tag)}>{tag}</a>)}
+        </p>
+      </footer>
+    )}
+
+    <p style="margin-top: var(--sp-7);">
+      <a href={blogHref}>{t('post.back')}</a>
+    </p>
+  </article>
+</BaseLayout>

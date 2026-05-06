@@ -1,0 +1,31 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { allLangs, useTranslations, type Lang } from '../../i18n/utils';
+import { getProjects } from '../../lib/content';
+
+export function getStaticPaths() {
+  return allLangs.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+---
+
+<PageLayout title={t('page.projects.title')} container="wide">
+  {projects.length === 0 ? (
+    <p class="muted">No projects listed yet.</p>
+  ) : (
+    <div class="grid grid--cards">
+      {projects.map((p) => (
+        <ProjectCard
+          title={p.data.title}
+          description={p.data.description}
+          href={p.data.link ?? p.data.repo}
+          tags={p.data.tags}
+        />
+      ))}
+    </div>
+  )}
+</PageLayout>

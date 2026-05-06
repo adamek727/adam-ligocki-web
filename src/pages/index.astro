@@ -1,0 +1,23 @@
+---
+/*
+ * Root redirect. Astro's i18n with `redirectToDefaultLocale: true` should
+ * cover this, but a static meta-refresh keeps things working when the file
+ * is opened directly (e.g. from a flat hosting setup).
+ */
+import { defaultLang } from '../i18n/utils';
+
+const target = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/${defaultLang}/`;
+---
+
+<!doctype html>
+<html lang={defaultLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>Adam Ligocki</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>…</p>
+  </body>
+</html>

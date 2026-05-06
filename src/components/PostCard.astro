@@ -1,0 +1,33 @@
+---
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  title: string;
+  href: string;
+  date: Date;
+  description?: string;
+  tags?: string[];
+  lang: Lang;
+}
+
+const { title, href, date, description, tags = [], lang } = Astro.props;
+
+const formatted = new Intl.DateTimeFormat(lang === 'cs' ? 'cs-CZ' : 'en-GB', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}).format(date);
+---
+
+<article>
+  <p class="post-list__date">
+    <time datetime={date.toISOString()}>{formatted}</time>
+  </p>
+  <h3 class="post-list__title"><a href={href}>{title}</a></h3>
+  {description && <p class="post-list__excerpt">{description}</p>}
+  {tags.length > 0 && (
+    <p class="cluster" style="margin-top: var(--sp-3); gap: var(--sp-2);">
+      {tags.map((tag) => <span class="tag">{tag}</span>)}
+    </p>
+  )}
+</article>

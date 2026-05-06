@@ -1,0 +1,29 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  container?: 'narrow' | 'base' | 'wide';
+}
+
+const { title, description, eyebrow, container = 'base' } = Astro.props;
+const containerClass =
+  container === 'narrow' ? 'container container--narrow'
+  : container === 'wide' ? 'container container--wide'
+  : 'container';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class={`${containerClass} section`}>
+    <header class="stack" style="margin-bottom: var(--sp-6);">
+      {eyebrow && <p class="hero__eyebrow">{eyebrow}</p>}
+      <h1>{title}</h1>
+      {description && <p class="muted" style="font-size: var(--fs-md);">{description}</p>}
+    </header>
+    <div class="prose stack">
+      <slot />
+    </div>
+  </section>
+</BaseLayout>

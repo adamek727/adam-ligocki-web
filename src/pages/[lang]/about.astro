@@ -1,0 +1,24 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { allLangs, useTranslations, type Lang } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return allLangs.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+
+// Pull the localized "about" page body from markdown so content stays out of
+// component code. See src/content/pages/<lang>/about.md.
+const pages = import.meta.glob<{ Content: any; frontmatter: any }>(
+  '../../content/pages/**/about.md',
+  { eager: true },
+);
+const entry = pages[`../../content/pages/${lang}/about.md`];
+const Content = entry?.Content;
+---
+
+<PageLayout title={t('page.about.title')} container="narrow">
+  {Content ? <Content /> : <p class="muted">Content coming soon.</p>}
+</PageLayout>

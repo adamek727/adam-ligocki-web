@@ -1,0 +1,17 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container container--wide site-footer__inner">
+    <div>© {year} Adam Ligocki</div>
+    <div class="cluster" style="gap: var(--sp-4);">
+      <span class="subtle">{t('footer.built')}</span>
+      <a href="https://github.com/adamek727/adam-ligocki-web">{t('footer.source')}</a>
+    </div>
+  </div>
+</footer>
