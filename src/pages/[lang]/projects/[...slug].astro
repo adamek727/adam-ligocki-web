@@ -1,0 +1,40 @@
+---
+import { render } from 'astro:content';
+import ProjectLayout from '../../../layouts/ProjectLayout.astro';
+import { allLangs } from '../../../i18n/utils';
+import { getProjects, entrySlug } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of allLangs) {
+    for (const project of await getProjects(lang)) {
+      paths.push({
+        params: { lang, slug: entrySlug(project.id) },
+        props: { project },
+      });
+    }
+  }
+  return paths;
+}
+
+const { project } = Astro.props as {
+  project: Awaited<ReturnType<typeof getProjects>>[number];
+};
+const { Content } = await render(project);
+---
+
+<ProjectLayout
+  title={project.data.title}
+  description={project.data.description}
+  client={project.data.client}
+  role={project.data.role}
+  period={project.data.period}
+  outcome={project.data.outcome}
+  stack={project.data.stack}
+  cover={project.data.cover}
+  tags={project.data.tags}
+  repo={project.data.repo}
+  link={project.data.link}
+>
+  <Content />
+</ProjectLayout>

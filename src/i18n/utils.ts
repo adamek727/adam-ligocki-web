@@ -23,21 +23,21 @@ export function useTranslations(lang: Lang) {
 /**
  * Replace the language segment in a path. Used by the language switcher.
  * Preserves the rest of the path so the user lands on the equivalent page.
+ *
+ * A path with no language segment — the 404 page, the root redirect — has no
+ * equivalent to preserve, so it falls back to that language's home. Prefixing
+ * the language onto such a path would invent a URL that does not exist.
  */
 export function switchLangInPath(pathname: string, target: Lang): string {
   const parts = pathname.split('/');
-  let replaced = false;
   for (let i = 0; i < parts.length; i++) {
     if (parts[i] in languages) {
       parts[i] = target;
-      replaced = true;
-      break;
+      return parts.join('/');
     }
   }
-  if (!replaced) {
-    return `/${target}${pathname.startsWith('/') ? pathname : '/' + pathname}`;
-  }
-  return parts.join('/');
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  return `${base}/${target}/`;
 }
 
 /** All locales the site supports — handy for `getStaticPaths`. */

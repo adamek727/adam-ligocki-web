@@ -34,7 +34,7 @@ const postHref = (slug: string) => `${base}/${lang}/blog/${slug}`;
 const blogHref = `${base}/${lang}/blog`;
 ---
 
-<PageLayout title={`${t('tag.title')}: ${tag}`} container="narrow">
+<PageLayout title={`${t('tag.title')}: ${tag}`} container="narrow" langAltPath="/blog">
   <p style="margin-bottom: var(--sp-5);">
     <a href={blogHref}>{t('tag.back')}</a>
   </p>

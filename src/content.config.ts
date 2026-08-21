@@ -21,15 +21,25 @@ const blog = defineCollection({
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    tags: z.array(z.string()).default([]),
-    repo: z.string().url().optional(),
-    link: z.string().url().optional(),
-    order: z.number().default(100),
-    featured: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      // Engagement framing. `client` may be anonymised when an NDA applies,
+      // e.g. "Confidential automotive OEM".
+      client: z.string().optional(),
+      role: z.string().optional(),
+      period: z.string().optional(),
+      outcome: z.string().optional(),
+      stack: z.array(z.string()).default([]),
+      cover: image().optional(),
+      tags: z.array(z.string()).default([]),
+      repo: z.string().url().optional(),
+      link: z.string().url().optional(),
+      order: z.number().default(100),
+      featured: z.boolean().default(false),
+      draft: z.boolean().default(false),
+    }),
 });
 
 export const collections = { blog, projects };

@@ -2,8 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
 import { allLangs, useTranslations, type Lang } from '../../i18n/utils';
-import { getBlogPosts, getProjects, entrySlug } from '../../lib/content';
+import { getBlogPosts, getProjects, entrySlug, projectMeta } from '../../lib/content';
 
 export function getStaticPaths() {
   return allLangs.map((lang) => ({ params: { lang } }));
@@ -19,19 +20,56 @@ const recentPosts = (await getBlogPosts(lang)).slice(0, 3);
 const featuredProjects = (await getProjects(lang))
   .filter((p) => p.data.featured)
   .slice(0, 3);
+
+// Order matches the services page: research and prototyping leads, because
+// research groups and deep-tech teams are the primary audience.
+const services = [
+  {
+    title: t('page.home.service.rnd'),
+    body: t('page.home.service.rnd.body'),
+    href: `${link('/services')}#rnd`,
+  },
+  {
+    title: t('page.home.service.delivery'),
+    body: t('page.home.service.delivery.body'),
+    href: `${link('/services')}#delivery`,
+  },
+  {
+    title: t('page.home.service.consulting'),
+    body: t('page.home.service.consulting.body'),
+    href: `${link('/services')}#consulting`,
+  },
+];
+
+const proof = [
+  { value: t('page.home.proof.years.value'), label: t('page.home.proof.years.label') },
+  { value: t('page.home.proof.domains.value'), label: t('page.home.proof.domains.label') },
+  { value: t('page.home.proof.research.value'), label: t('page.home.proof.research.label') },
+];
 ---
 
 <BaseLayout>
   <section class="container container--wide section--hero">
-    <p class="hero__eyebrow">{t('page.home.eyebrow')}</p>
-    <h1 class="hero__title">Adam Ligocki</h1>
-    <p class="hero__lede">{t('site.tagline')} — {t('site.description')}</p>
+    <p class="availability">{t('page.home.availability')}</p>
+    <h1 class="hero__title">{t('site.title')}</h1>
+    <p class="hero__lede">{t('page.home.positioning')}</p>
 
     <p class="cluster" style="margin-top: var(--sp-6); gap: var(--sp-4);">
-      <a href={link('/projects')}>{t('nav.projects')} →</a>
-      <a href={link('/blog')}>{t('nav.blog')} →</a>
-      <a href={link('/contact')}>{t('nav.contact')} →</a>
+      <a class="button" href={link('/contact')}>{t('page.home.cta.primary')}</a>
+      <a href={link('/projects')}>{t('page.home.cta.secondary')} →</a>
     </p>
+  </section>
+
+  <section class="container container--wide section">
+    <div class="section-heading">
+      <h2>{t('page.home.services')}</h2>
+      <a href={link('/services')} class="muted">{t('nav.services')} →</a>
+    </div>
+    <div class="grid grid--cards">
+      {services.map((s) => (
+        <ServiceCard title={s.title} body={s.body} href={s.href} />
+      ))}
+    </div>
   </section>
 
   {featuredProjects.length > 0 && (
@@ -45,13 +83,27 @@ const featuredProjects = (await getProjects(lang))
           <ProjectCard
             title={p.data.title}
             description={p.data.description}
-            href={p.data.link ?? p.data.repo}
+            href={`${link('/projects/')}${entrySlug(p.id)}`}
+            meta={projectMeta(p)}
+            outcome={p.data.outcome}
             tags={p.data.tags}
           />
         ))}
       </div>
     </section>
   )}
+
+  <section class="container container--wide section">
+    <h2 class="visually-hidden">{t('page.home.proof')}</h2>
+    <ul class="proof-strip">
+      {proof.map((item) => (
+        <li class="proof-strip__item">
+          <span class="proof-strip__value">{item.value}</span>
+          <span class="proof-strip__label">{item.label}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
 
   {recentPosts.length > 0 && (
     <section class="container container--wide section">
@@ -75,4 +127,12 @@ const featuredProjects = (await getProjects(lang))
       </ul>
     </section>
   )}
+
+  <section class="container container--wide section">
+    <div class="closing-cta">
+      <h2>{t('page.home.closing')}</h2>
+      <p>{t('page.home.closing.body')}</p>
+      <p><a class="button" href={link('/contact')}>{t('page.home.cta.primary')}</a></p>
+    </div>
+  </section>
 </BaseLayout>

@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import { allLangs, useTranslations, type Lang } from '../../i18n/utils';
+import { siteConfig } from '../../config';
 
 export function getStaticPaths() {
   return allLangs.map((lang) => ({ params: { lang } }));
@@ -9,16 +10,37 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Lang };
 const t = useTranslations(lang);
 
-// Pull the localized "about" page body from markdown so content stays out of
-// component code. See src/content/pages/<lang>/about.md.
-const pages = import.meta.glob<{ Content: any; frontmatter: any }>(
+// Pull the localized page bodies from markdown so content stays out of
+// component code. The CV is a section of this page rather than a route of its
+// own, which keeps the primary navigation to six items.
+const aboutPages = import.meta.glob<{ Content: any }>(
   '../../content/pages/**/about.md',
   { eager: true },
 );
-const entry = pages[`../../content/pages/${lang}/about.md`];
-const Content = entry?.Content;
+const cvPages = import.meta.glob<{ Content: any }>(
+  '../../content/pages/**/cv.md',
+  { eager: true },
+);
+
+const About = aboutPages[`../../content/pages/${lang}/about.md`]?.Content;
+const Cv = cvPages[`../../content/pages/${lang}/cv.md`]?.Content;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const cvPdf = `${base}/adam-ligocki-cv-${lang}.pdf`;
 ---
 
 <PageLayout title={t('page.about.title')} container="narrow">
-  {Content ? <Content /> : <p class="muted">Content coming soon.</p>}
+  {About ? <About /> : <p class="muted">Content coming soon.</p>}
+
+  {Cv && (
+    <section class="stack" style="margin-top: var(--sp-8);">
+      <div class="section-heading">
+        <h2 id="cv">{t('about.cv.heading')}</h2>
+        {siteConfig.cvPdfAvailable && (
+          <a href={cvPdf} class="muted" download>{t('about.cv.download')} ↓</a>
+        )}
+      </div>
+      <Cv />
+    </section>
+  )}
 </PageLayout>

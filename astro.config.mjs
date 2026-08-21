@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // Site configuration.
 //
@@ -12,6 +13,14 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'ignore',
+  integrations: [
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', cs: 'cs' },
+      },
+    }),
+  ],
   build: {
     format: 'directory',
   },

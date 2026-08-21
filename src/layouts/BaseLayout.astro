@@ -2,12 +2,25 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getLangFromUrl, useTranslations, type Lang } from '../i18n/utils';
+import {
+  allLangs,
+  getLangFromUrl,
+  languages,
+  switchLangInPath,
+  useTranslations,
+  type Lang,
+} from '../i18n/utils';
+import { siteConfig } from '../config';
 
 interface Props {
   title?: string;
   description?: string;
+  // Path after the language segment that the other languages should point at,
+  // for pages whose URL has no direct equivalent — see LanguageSwitcher.
+  langAltPath?: string;
 }
+
+const { langAltPath } = Astro.props;
 
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -19,7 +32,77 @@ const pageTitle = Astro.props.title
 const description = Astro.props.description ?? t('site.description');
 
 // `import.meta.env.BASE_URL` already includes the configured `base`.
-const favicon = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const favicon = `${base}/favicon.svg`;
+
+// Absolute URLs for canonical, sharing and hreflang. `Astro.site` carries the
+// deployment origin; `Astro.url.pathname` already includes the base path, so
+// joining the two gives the real public URL.
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : Astro.url.href;
+
+// Only localized pages get hreflang alternates. On a page with no language
+// segment — the 404, the root redirect — switchLangInPath would prefix rather
+// than replace, inventing URLs that do not exist.
+const pathIsLocalized = Astro.url.pathname
+  .split('/')
+  .filter(Boolean)
+  .some((segment) => segment in languages);
+
+const altPath = (code: Lang) =>
+  langAltPath === undefined
+    ? switchLangInPath(Astro.url.pathname, code)
+    : `${base}/${code}${langAltPath}`;
+
+const alternates = pathIsLocalized
+  ? allLangs.map((code) => ({
+      code,
+      href: Astro.site ? new URL(altPath(code), Astro.site).href : altPath(code),
+    }))
+  : [];
+
+const ogImage = Astro.site
+  ? new URL(`${base}/og.png`, Astro.site).href
+  : `${base}/og.png`;
+
+const siteRoot = Astro.site
+  ? new URL(import.meta.env.BASE_URL, Astro.site).href
+  : import.meta.env.BASE_URL;
+
+// Structured data. Two nodes: the person, and the service offered, so a search
+// result can distinguish the individual from the freelance practice.
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${siteRoot}#person`,
+      name: siteConfig.name,
+      url: siteRoot,
+      email: `mailto:${siteConfig.email}`,
+      image: ogImage,
+      jobTitle: t('site.tagline'),
+      sameAs: [siteConfig.github, siteConfig.linkedin, siteConfig.scholar],
+    },
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${siteRoot}#service`,
+      name: siteConfig.name,
+      url: siteRoot,
+      image: ogImage,
+      description: t('site.description'),
+      provider: { '@id': `${siteRoot}#person` },
+      areaServed: 'Worldwide',
+      availableLanguage: ['en', 'cs'],
+    },
+  ],
+};
+
+// Analytics only in production, and only once a real site code is set — this
+// keeps dev sessions and unconfigured checkouts out of the statistics.
+const analyticsEnabled =
+  import.meta.env.PROD && siteConfig.goatcounterCode !== 'REPLACE_ME';
 ---
 
 <!doctype html>
@@ -34,7 +117,28 @@ const favicon = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="canonical" href={canonical} />
+    {alternates.map((alt) => (
+      <link rel="alternate" hreflang={alt.code} href={alt.href} />
+    ))}
+    {alternates.length > 0 && (
+      <link rel="alternate" hreflang="x-default" href={alternates[0].href} />
+    )}
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${t('site.title')} — ${t('page.blog.title')}`}
+      href={`${base}/${lang}/rss.xml`}
+    />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <!--
       Inline theme bootstrap. Runs before paint so the correct theme is
@@ -49,10 +153,19 @@ const favicon = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`;
         }
       } catch { /* storage unavailable */ }
     </script>
+
+    {analyticsEnabled && (
+      <script
+        is:inline
+        data-goatcounter={`https://${siteConfig.goatcounterCode}.goatcounter.com/count`}
+        async
+        src="//gc.zgo.at/count.js"
+      />
+    )}
   </head>
   <body>
     <a class="visually-hidden" href="#main">Skip to content</a>
-    <Header />
+    <Header langAltPath={langAltPath} />
     <main id="main">
       <slot />
     </main>

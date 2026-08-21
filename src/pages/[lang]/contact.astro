@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../../layouts/PageLayout.astro';
 import { allLangs, useTranslations, type Lang } from '../../i18n/utils';
+import { siteConfig } from '../../config';
 
 export function getStaticPaths() {
   return allLangs.map((lang) => ({ params: { lang } }));
@@ -13,10 +14,55 @@ const pages = import.meta.glob<{ Content: any }>(
   '../../content/pages/**/contact.md',
   { eager: true },
 );
-const entry = pages[`../../content/pages/${lang}/contact.md`];
-const Content = entry?.Content;
+const Content = pages[`../../content/pages/${lang}/contact.md`]?.Content;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const thankYou = Astro.site
+  ? new URL(`${base}/${lang}/thank-you/`, Astro.site).href
+  : `${base}/${lang}/thank-you/`;
+
+// The form only works once a real Web3Forms access key is configured. Until
+// then the markdown contact details render on their own, rather than showing
+// a form that would silently fail.
+const formEnabled = siteConfig.web3formsKey !== 'REPLACE_ME';
 ---
 
 <PageLayout title={t('page.contact.title')} container="narrow">
   {Content ? <Content /> : <p class="muted">Content coming soon.</p>}
+
+  {formEnabled && (
+    <section style="margin-top: var(--sp-8);">
+      <h2>{t('contact.form.heading')}</h2>
+      <form class="form stack" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value={siteConfig.web3formsKey} />
+        <input type="hidden" name="subject" value={t('contact.form.subject')} />
+        <input type="hidden" name="redirect" value={thankYou} />
+        <input
+          type="checkbox"
+          name="botcheck"
+          class="visually-hidden"
+          style="display: none;"
+          tabindex="-1"
+          autocomplete="off"
+        />
+
+        <label class="form__field">
+          <span>{t('contact.form.name')}</span>
+          <input type="text" name="name" required autocomplete="name" />
+        </label>
+
+        <label class="form__field">
+          <span>{t('contact.form.email')}</span>
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+
+        <label class="form__field">
+          <span>{t('contact.form.message')}</span>
+          <textarea name="message" rows="6" required></textarea>
+        </label>
+
+        <p><button class="button" type="submit">{t('contact.form.submit')}</button></p>
+      </form>
+    </section>
+  )}
 </PageLayout>

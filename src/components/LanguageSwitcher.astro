@@ -6,14 +6,29 @@ import {
   type Lang,
 } from '../i18n/utils';
 
+interface Props {
+  // Path after the language segment to switch to, instead of the current one.
+  // Set by pages whose URL has no equivalent in the other language, such as
+  // tag pages, where the tag itself is translated.
+  altPath?: string;
+}
+
+const { altPath } = Astro.props;
+
 const current = getLangFromUrl(Astro.url);
 const codes = Object.keys(languages) as Lang[];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const hrefFor = (code: Lang) =>
+  altPath === undefined
+    ? switchLangInPath(Astro.url.pathname, code)
+    : `${base}/${code}${altPath}`;
 ---
 
 <nav class="lang-switch" aria-label="Language">
   {codes.map((code) => (
     <a
-      href={switchLangInPath(Astro.url.pathname, code)}
+      href={hrefFor(code)}
       aria-current={code === current ? 'true' : 'false'}
       hreflang={code}
     >

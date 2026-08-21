@@ -6,16 +6,17 @@ interface Props {
   description?: string;
   eyebrow?: string;
   container?: 'narrow' | 'base' | 'wide';
+  langAltPath?: string;
 }
 
-const { title, description, eyebrow, container = 'base' } = Astro.props;
+const { title, description, eyebrow, container = 'base', langAltPath } = Astro.props;
 const containerClass =
   container === 'narrow' ? 'container container--narrow'
   : container === 'wide' ? 'container container--wide'
   : 'container';
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} langAltPath={langAltPath}>
   <section class={`${containerClass} section`}>
     <header class="stack" style="margin-bottom: var(--sp-6);">
       {eyebrow && <p class="hero__eyebrow">{eyebrow}</p>}

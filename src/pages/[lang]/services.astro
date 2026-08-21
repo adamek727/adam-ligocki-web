@@ -1,0 +1,21 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { allLangs, useTranslations, type Lang } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return allLangs.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+
+const pages = import.meta.glob<{ Content: any }>(
+  '../../content/pages/**/services.md',
+  { eager: true },
+);
+const Content = pages[`../../content/pages/${lang}/services.md`]?.Content;
+---
+
+<PageLayout title={t('page.services.title')} container="base">
+  {Content ? <Content /> : <p class="muted">Content coming soon.</p>}
+</PageLayout>

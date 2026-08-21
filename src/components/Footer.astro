@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { siteConfig } from '../config';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -11,7 +12,7 @@ const year = new Date().getFullYear();
     <div>© {year} Adam Ligocki</div>
     <div class="cluster" style="gap: var(--sp-4);">
       <span class="subtle">{t('footer.built')}</span>
-      <a href="https://github.com/adamek727/adam-ligocki-web">{t('footer.source')}</a>
+      <a href={siteConfig.repo}>{t('footer.source')}</a>
     </div>
   </div>
 </footer>

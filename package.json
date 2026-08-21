@@ -3,15 +3,24 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "Personal portfolio and blog of Adam Ligocki — Programmer, AI/ML and Robotics specialist.",
+  "description": "Personal portfolio and blog of Adam Ligocki \u2014 Programmer, AI/ML and Robotics specialist.",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "check": "astro check && astro build && npm run check:links",
+    "og": "node scripts/make-og.mjs",
+    "astro": "astro",
+    "check:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
     "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
   }
 }

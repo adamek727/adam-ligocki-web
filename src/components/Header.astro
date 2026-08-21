@@ -3,6 +3,12 @@ import { getLangFromUrl, useTranslations, type Lang } from '../i18n/utils';
 import ThemeToggle from './ThemeToggle.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
+interface Props {
+  langAltPath?: string;
+}
+
+const { langAltPath } = Astro.props;
+
 const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
@@ -10,12 +16,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const link = (path: string) => `${base}/${lang}${path}`;
 
 const items = [
-  { href: link(''),         label: t('nav.home') },
-  { href: link('/about'),   label: t('nav.about') },
-  { href: link('/projects'),label: t('nav.projects') },
-  { href: link('/cv'),      label: t('nav.cv') },
-  { href: link('/blog'),    label: t('nav.blog') },
-  { href: link('/contact'), label: t('nav.contact') },
+  { href: link(''),          label: t('nav.home') },
+  { href: link('/services'), label: t('nav.services') },
+  { href: link('/projects'), label: t('nav.projects') },
+  { href: link('/about'),    label: t('nav.about') },
+  { href: link('/blog'),     label: t('nav.blog') },
+  { href: link('/contact'),  label: t('nav.contact') },
 ];
 
 // Determine the current page so we can mark it in the nav.
@@ -40,7 +46,7 @@ const isCurrent = (href: string) => {
     </nav>
 
     <div class="cluster" style="gap: var(--sp-3);">
-      <LanguageSwitcher />
+      <LanguageSwitcher altPath={langAltPath} />
       <ThemeToggle />
     </div>
   </div>

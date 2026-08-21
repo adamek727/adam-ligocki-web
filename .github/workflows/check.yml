@@ -1,0 +1,36 @@
+# Pull-request quality gate. The deploy workflows are untouched — this only
+# blocks merges, it never publishes.
+#
+# `npm run check` runs astro check, a production build, and the internal link
+# checker in scripts/check-links.mjs. The link checker deliberately ignores
+# external URLs: failing a pull request because someone else's server is down
+# would make this gate untrustworthy, and an untrusted gate gets bypassed.
+name: Check
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check, build and check links
+        env:
+          # Must match the deploy workflow: the link checker strips this base
+          # from root-relative hrefs before resolving them against ./dist.
+          SITE_URL: https://adamek727.github.io
+          SITE_BASE: /adam-ligocki-web
+        run: npm run check
