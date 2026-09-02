@@ -1,38 +1,46 @@
 /*
  * Design tokens. The single source of truth for the visual identity.
  *
- * To re-skin the entire site, change values in this file. No other CSS file
- * should hard-code colors, spacing or typography — only references to vars
- * defined here.
+ * The page is a stack of full-bleed blocks that alternate between a deep blue
+ * panel, a tinted visual, and a pale panel. Everything is one colour family:
+ * a single blue tint lies over every visual so photographs taken on different
+ * days, with different cameras, still read as one site. That tint is the whole
+ * identity — remove it and the design is gone.
+ *
+ * Headings are a serif, set large, uppercase and letterspaced. Body copy is a
+ * sans, set short and centred. The contrast between those two is deliberate.
  */
 
 :root {
   /* ---- Typography ---------------------------------------------------- */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-               "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-               "Liberation Mono", monospace;
-  --font-serif: Georgia, "Times New Roman", serif;
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --fs-xs:   0.8125rem;   /* 13px */
-  --fs-sm:   0.9375rem;   /* 15px */
-  --fs-base: 1.0625rem;   /* 17px */
-  --fs-md:   1.1875rem;   /* 19px */
-  --fs-lg:   1.5rem;      /* 24px */
-  --fs-xl:   2rem;        /* 32px */
-  --fs-2xl:  2.75rem;     /* 44px */
-  --fs-3xl:  3.5rem;      /* 56px */
+  --fs-xs:   0.8125rem;
+  --fs-sm:   0.9375rem;
+  --fs-base: 1.0625rem;
+  --fs-md:   1.1875rem;
+  --fs-lg:   1.5rem;
+  --fs-xl:   2rem;
+  --fs-2xl:  2.75rem;
+  --fs-3xl:  3.5rem;
+  --fs-stat: 4.5rem;
 
-  --lh-tight: 1.2;
-  --lh-snug:  1.4;
-  --lh-base:  1.65;
+  --lh-tight: 1.12;
+  --lh-snug:  1.45;
+  --lh-base:  1.75;
 
   --fw-regular: 400;
   --fw-medium:  500;
   --fw-semibold: 600;
   --fw-bold:    700;
 
-  /* ---- Spacing scale (8px base) ------------------------------------- */
+  --track-display: 0.06em;
+  --track-label: 0.18em;
+
+  /* ---- Spacing -------------------------------------------------------- */
   --sp-1:  0.25rem;
   --sp-2:  0.5rem;
   --sp-3:  0.75rem;
@@ -43,78 +51,73 @@
   --sp-8:  4rem;
   --sp-9:  6rem;
 
-  /* ---- Layout ------------------------------------------------------- */
-  --container-narrow: 42rem;
-  --container-base:   54rem;
-  --container-wide:   72rem;
+  /* ---- Layout --------------------------------------------------------- */
+  --container-narrow: 34rem;
+  --container-base:   48rem;
+  --container-wide:   68rem;
+  --block-min: 30rem;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
 
   --border-width: 1px;
 
-  /* ---- Motion ------------------------------------------------------- */
+  /* ---- Motion --------------------------------------------------------- */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --dur-fast: 120ms;
-  --dur-base: 200ms;
+  --dur-fast: 160ms;
+  --dur-base: 320ms;
 
-  /* ---- Light theme (default) ---------------------------------------- */
+  /* ---- The one colour family ------------------------------------------ */
   color-scheme: light;
-  --bg:           #ffffff;
-  --bg-elevated:  #f7f7f5;
-  --bg-subtle:    #f1f1ee;
-  --fg:           #111213;
-  --fg-muted:     #555a60;
-  --fg-subtle:    #80868e;
-  --border:       #e3e3df;
-  --border-strong:#cfcfca;
-  --accent:       #2b6cb0;
-  --accent-hover: #1f4f86;
-  --accent-fg:    #ffffff;
-  --code-bg:      #f4f4f0;
-  --selection-bg: #d8e4f4;
-  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md:    0 6px 24px rgba(0, 0, 0, 0.06);
+  --ink:        #0a1f33;  /* deepest, for the tint and the darkest panels */
+  --deep:       #123a5c;  /* the dark panel */
+  --mid:        #1c5480;  /* mid tone inside visuals */
+  --pale:       #dbe6ef;  /* the light panel */
+  --paper:      #eaf0f5;
+  --bg:            var(--paper);
+  --bg-elevated:   #ffffff;
+  --bg-subtle:     var(--pale);
+  --fg:            #16293a;
+  --fg-heading:    #0a1f33;
+  --fg-muted:      #4a6377;
+  --fg-label:      #7591a7;
+  --fg-subtle:     #86a0b3;
+  --on-deep:       #dfeaf3;
+  --on-deep-mut:   #93b2c9;
+  --border:        #c9d8e4;
+  --border-strong: #9db4c7;
+  --accent:        #2c6ea8;
+  --accent-hover:  #17456e;
+  --accent-fg:     #ffffff;
+  --code-bg:       #dbe6ef;
+  --selection-bg:  #c2d8ea;
+  --shadow-md:     0 18px 50px rgba(10, 31, 51, 0.18);
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg:           #0f1113;
-  --bg-elevated:  #16191c;
-  --bg-subtle:    #1c2024;
-  --fg:           #e6e8ea;
-  --fg-muted:     #a3a8ae;
-  --fg-subtle:    #707680;
-  --border:       #262a2f;
-  --border-strong:#3a3f46;
-  --accent:       #6aa4e8;
-  --accent-hover: #8cbcf2;
-  --accent-fg:    #0f1113;
-  --code-bg:      #16191c;
-  --selection-bg: #2a3a52;
-  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md:    0 6px 24px rgba(0, 0, 0, 0.4);
-}
-
-/* When the user has not chosen a theme, follow the system preference. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-    --bg:           #0f1113;
-    --bg-elevated:  #16191c;
-    --bg-subtle:    #1c2024;
-    --fg:           #e6e8ea;
-    --fg-muted:     #a3a8ae;
-    --fg-subtle:    #707680;
-    --border:       #262a2f;
-    --border-strong:#3a3f46;
-    --accent:       #6aa4e8;
-    --accent-hover: #8cbcf2;
-    --accent-fg:    #0f1113;
-    --code-bg:      #16191c;
-    --selection-bg: #2a3a52;
-    --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md:    0 6px 24px rgba(0, 0, 0, 0.4);
-  }
+  --ink:        #05121e;
+  --deep:       #0c2b45;
+  --mid:        #164060;
+  --pale:       #10293c;
+  --paper:      #081726;
+  --bg:            var(--paper);
+  --bg-elevated:   #0e2437;
+  --bg-subtle:     var(--pale);
+  --fg:            #d6e4ef;
+  --fg-heading:    #eaf2f9;
+  --fg-muted:      #9db6ca;
+  --fg-label:      #7595ad;
+  --fg-subtle:     #6d8ba3;
+  --on-deep:       #dfeaf3;
+  --on-deep-mut:   #93b2c9;
+  --border:        #1d3a52;
+  --border-strong: #2f5a7c;
+  --accent:        #6aa3d8;
+  --accent-hover:  #9cc4e8;
+  --accent-fg:     #05121e;
+  --code-bg:       #10293c;
+  --selection-bg:  #1c4a70;
+  --shadow-md:     0 18px 50px rgba(0, 0, 0, 0.5);
 }

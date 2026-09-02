@@ -37,8 +37,22 @@ const projects = defineCollection({
       repo: z.string().url().optional(),
       link: z.string().url().optional(),
       order: z.number().default(100),
+      // Marks the one tile rendered inverted. Exactly one entry should set it.
       featured: z.boolean().default(false),
+      // Makes the tile span two bento columns instead of one.
+      wide: z.boolean().default(false),
       draft: z.boolean().default(false),
+      // Draws the entry's headline number at true scale. `total` cells, of
+      // which the first `start` are filled. Only ULLMANNA uses it, and only
+      // one entry should: it is the page's single chart.
+      fleet: z
+        .object({
+          start: z.number(),
+          total: z.number(),
+          startLabel: z.string(),
+          endLabel: z.string(),
+        })
+        .optional(),
     }),
 });
 

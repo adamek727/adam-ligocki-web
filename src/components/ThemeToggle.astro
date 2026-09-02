@@ -25,10 +25,6 @@ const t = useTranslations(lang);
   .theme-toggle__moon { display: none; }
   :global(:root[data-theme="dark"]) .theme-toggle__sun  { display: none; }
   :global(:root[data-theme="dark"]) .theme-toggle__moon { display: block; }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme])) .theme-toggle__sun  { display: none; }
-    :global(:root:not([data-theme])) .theme-toggle__moon { display: block; }
-  }
 </style>
 
 <script>
@@ -37,9 +33,8 @@ const t = useTranslations(lang);
   const btn = document.getElementById('theme-toggle');
   btn?.addEventListener('click', () => {
     const root = document.documentElement;
-    const current =
-      root.dataset.theme ??
-      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    // Light is the default, so an unset attribute means light.
+    const current = root.dataset.theme ?? 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
     try { localStorage.setItem('theme', next); } catch { /* storage disabled */ }

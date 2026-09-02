@@ -112,6 +112,17 @@ const analyticsEnabled =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href={favicon} />
+
+    <!--
+      Source Serif 4 for the display headings, IBM Plex Sans for everything
+      else. Both are already used by the CV builder in adam-freelance.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+    />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta property="og:title" content={pageTitle} />
@@ -141,9 +152,10 @@ const analyticsEnabled =
     <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <!--
-      Inline theme bootstrap. Runs before paint so the correct theme is
-      applied without a flash. Reads localStorage first, then falls back to
-      the system preference.
+      Inline theme bootstrap. Runs before paint so a returning visitor who
+      chose dark does not see a flash of light. There is deliberately no
+      system-preference fallback: light is the default for everyone, because
+      the page is made to be shared and should look the same in every room.
     -->
     <script is:inline>
       try {

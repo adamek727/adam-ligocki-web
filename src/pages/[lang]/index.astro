@@ -1,138 +1,186 @@
 ---
+/*
+ * The whole site, minus the blog: a stack of full-bleed blocks.
+ *
+ * Each block is a tinted visual beside a panel of a few short lines, and they
+ * alternate side to side down the page. All copy lives in
+ * src/content/pages/<lang>/home.md; the client list lives in
+ * src/content/projects/<lang>/*.md. Nothing is written here.
+ *
+ * A block renders a generated pattern until a photograph exists. Add
+ * `image: something.jpg` to the block in home.md, put the file in public/, and
+ * the photograph replaces the pattern under the same tint.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import ServiceCard from '../../components/ServiceCard.astro';
 import { allLangs, useTranslations, type Lang } from '../../i18n/utils';
-import { getBlogPosts, getProjects, entrySlug, projectMeta } from '../../lib/content';
+import { getProjects } from '../../lib/content';
+import { siteConfig } from '../../config';
 
 export function getStaticPaths() {
   return allLangs.map((lang) => ({ params: { lang } }));
+}
+
+interface Block {
+  id: string;
+  title: string;
+  pattern: 'points' | 'grid' | 'bars';
+  panel: 'pale' | 'deep';
+  flip?: boolean;
+  lines: string[];
+  image?: string;
+}
+
+interface HomeFrontmatter {
+  headline: string;
+  role: string;
+  tagline: string;
+  availability: string;
+  hero: { title: string; lines: string[]; image?: string };
+  numbers: { value: string; label: string }[];
+  blocks: Block[];
+  contact: { title: string; lines: string[] };
 }
 
 const { lang } = Astro.params as { lang: Lang };
 const t = useTranslations(lang);
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const link = (path: string) => `${base}/${lang}${path}`;
 
-const recentPosts = (await getBlogPosts(lang)).slice(0, 3);
-const featuredProjects = (await getProjects(lang))
-  .filter((p) => p.data.featured)
-  .slice(0, 3);
+const homePages = import.meta.glob<{ frontmatter: HomeFrontmatter }>(
+  '../../content/pages/**/home.md',
+  { eager: true },
+);
+const home = homePages[`../../content/pages/${lang}/home.md`];
+if (!home) throw new Error(`Missing src/content/pages/${lang}/home.md`);
 
-// Order matches the services page: research and prototyping leads, because
-// research groups and deep-tech teams are the primary audience.
-const services = [
-  {
-    title: t('page.home.service.rnd'),
-    body: t('page.home.service.rnd.body'),
-    href: `${link('/services')}#rnd`,
-  },
-  {
-    title: t('page.home.service.delivery'),
-    body: t('page.home.service.delivery.body'),
-    href: `${link('/services')}#delivery`,
-  },
-  {
-    title: t('page.home.service.consulting'),
-    body: t('page.home.service.consulting.body'),
-    href: `${link('/services')}#consulting`,
-  },
+const { headline, role, tagline, availability, hero, numbers, blocks, contact } =
+  home.frontmatter;
+
+const clients = await getProjects(lang);
+
+const contacts = [
+  { label: t('contact.email'), value: siteConfig.email, href: `mailto:${siteConfig.email}` },
+  { label: t('contact.linkedin'), value: 'adamligocki', href: siteConfig.linkedin },
+  { label: t('contact.github'), value: 'adamek727', href: siteConfig.github },
+  { label: t('contact.scholar'), value: t('contact.scholar.value'), href: siteConfig.scholar },
 ];
 
-const proof = [
-  { value: t('page.home.proof.years.value'), label: t('page.home.proof.years.label') },
-  { value: t('page.home.proof.domains.value'), label: t('page.home.proof.domains.label') },
-  { value: t('page.home.proof.research.value'), label: t('page.home.proof.research.label') },
-];
+const heroImage = hero.image ?? siteConfig.portrait;
+const cvHref = `${base}/${siteConfig.cvFile}`;
+const asset = (file: string) => `${base}/${file}`;
 ---
 
-<BaseLayout>
-  <section class="container container--wide section--hero">
-    <p class="availability">{t('page.home.availability')}</p>
-    <h1 class="hero__title">{t('site.title')}</h1>
-    <p class="hero__lede">{t('page.home.positioning')}</p>
-
-    <p class="cluster" style="margin-top: var(--sp-6); gap: var(--sp-4);">
-      <a class="button" href={link('/contact')}>{t('page.home.cta.primary')}</a>
-      <a href={link('/projects')}>{t('page.home.cta.secondary')} →</a>
-    </p>
-  </section>
-
-  <section class="container container--wide section">
-    <div class="section-heading">
-      <h2>{t('page.home.services')}</h2>
-      <a href={link('/services')} class="muted">{t('nav.services')} →</a>
-    </div>
-    <div class="grid grid--cards">
-      {services.map((s) => (
-        <ServiceCard title={s.title} body={s.body} href={s.href} />
-      ))}
-    </div>
-  </section>
-
-  {featuredProjects.length > 0 && (
-    <section class="container container--wide section">
-      <div class="section-heading">
-        <h2>{t('page.projects.title')}</h2>
-        <a href={link('/projects')} class="muted">{t('nav.projects')} →</a>
+<BaseLayout description={tagline}>
+  <section class="block block--hero">
+    <div class="block__visual">
+      {heroImage
+        ? <img src={asset(heroImage)} alt={headline} width="1200" height="1400" />
+        : <div class="block__pattern pattern--points" />}
+      <div class="block__stamp">
+        <p class="block__stamp-name">{headline}</p>
+        <p class="block__stamp-role">{role}</p>
+        {!heroImage && <p class="block__stamp-hint">{t('portrait.placeholder')}</p>}
       </div>
-      <div class="grid grid--cards">
-        {featuredProjects.map((p) => (
-          <ProjectCard
-            title={p.data.title}
-            description={p.data.description}
-            href={`${link('/projects/')}${entrySlug(p.id)}`}
-            meta={projectMeta(p)}
-            outcome={p.data.outcome}
-            tags={p.data.tags}
-          />
+    </div>
+
+    <div class="block__panel panel--deep">
+      <h1 class="block__title">{hero.title}</h1>
+      <div class="block__lines">
+        {hero.lines.map((line) => <p class="block__line">{line}</p>)}
+      </div>
+      <p class="block__line"><em>{availability}</em></p>
+      <div class="button-row">
+        <a class="button" href="#contact">{t('cta.contact')}</a>
+        <a class="button" href={cvHref} download>{t('cta.cv')}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="numbers">
+    <div class="container container--wide">
+      <h2 class="visually-hidden">{t('section.numbers')}</h2>
+      <div class="numbers__grid">
+        {numbers.map((n) => (
+          <p>
+            <span class="numbers__value">{n.value}</span>
+            <span class="numbers__label">{n.label}</span>
+          </p>
         ))}
       </div>
-    </section>
-  )}
-
-  <section class="container container--wide section">
-    <h2 class="visually-hidden">{t('page.home.proof')}</h2>
-    <ul class="proof-strip">
-      {proof.map((item) => (
-        <li class="proof-strip__item">
-          <span class="proof-strip__value">{item.value}</span>
-          <span class="proof-strip__label">{item.label}</span>
-        </li>
-      ))}
-    </ul>
+    </div>
   </section>
 
-  {recentPosts.length > 0 && (
-    <section class="container container--wide section">
-      <div class="section-heading">
-        <h2>{t('page.blog.title')}</h2>
-        <a href={link('/blog')} class="muted">{t('nav.blog')} →</a>
+  {blocks.map((b) => (
+    <section id={b.id} class:list={['block', b.flip && 'block--flip']}>
+      <div class="block__visual">
+        {b.image
+          ? <img src={asset(b.image)} alt="" width="1200" height="900" />
+          : <div class:list={['block__pattern', `pattern--${b.pattern}`]} />}
       </div>
-      <ul class="post-list">
-        {recentPosts.map((post) => (
-          <li>
-            <PostCard
-              title={post.data.title}
-              href={`${link('/blog/')}${entrySlug(post.id)}`}
-              date={post.data.pubDate}
-              description={post.data.description}
-              tags={post.data.tags}
-              lang={lang}
-            />
-          </li>
-        ))}
-      </ul>
+      <div class:list={['block__panel', `panel--${b.panel}`]}>
+        <h2 class="block__title">{b.title}</h2>
+        <div class="block__lines">
+          {b.lines.map((line) => <p class="block__line">{line}</p>)}
+        </div>
+      </div>
     </section>
-  )}
+  ))}
 
-  <section class="container container--wide section">
-    <div class="closing-cta">
-      <h2>{t('page.home.closing')}</h2>
-      <p>{t('page.home.closing.body')}</p>
-      <p><a class="button" href={link('/contact')}>{t('page.home.cta.primary')}</a></p>
+  <section id="work" class="work">
+    <div class="container container--wide">
+      <h2 class="block__title work__heading">{t('section.work')}</h2>
+      <div class="work__list">
+        {clients.map((client) => (
+          <article class="work__item">
+            <div>
+              <h3 class="work__name">{client.data.title}</h3>
+              <p class="work__meta">
+                {[client.data.client === client.data.title ? undefined : client.data.client,
+                  client.data.period].filter(Boolean).join(' · ')}
+              </p>
+              <p class="work__body">{client.data.description}</p>
+
+              {client.data.fleet && (
+                <figure class="fleet">
+                  <div
+                    class="fleet__grid"
+                    role="img"
+                    aria-label={`${client.data.fleet.startLabel} → ${client.data.fleet.endLabel}`}
+                  >
+                    {Array.from({ length: client.data.fleet.total }, (_, n) => (
+                      <span
+                        class:list={['fleet__cell', n < client.data.fleet!.start && 'fleet__cell--start']}
+                        style={`animation-delay: ${n * 2}ms`}
+                      />
+                    ))}
+                  </div>
+                  <figcaption class="fleet__scale">
+                    <span>{client.data.fleet.startLabel}</span>
+                    <span>{client.data.fleet.endLabel}</span>
+                  </figcaption>
+                </figure>
+              )}
+            </div>
+
+            {client.data.outcome && <p class="work__outcome">{client.data.outcome}</p>}
+          </article>
+        ))}
+      </div>
     </div>
+  </section>
+
+  <section id="contact" class="block__panel panel--ink" style="padding-block: var(--sp-9);">
+    <h2 class="block__title">{contact.title}</h2>
+    <div class="block__lines">
+      {contact.lines.map((line) => <p class="block__line">{line}</p>)}
+    </div>
+    <dl class="contact__list">
+      {contacts.map((item) => (
+        <div class="contact__row">
+          <dt>{item.label}</dt>
+          <dd><a href={item.href}>{item.value}</a></dd>
+        </div>
+      ))}
+    </dl>
   </section>
 </BaseLayout>

@@ -45,13 +45,6 @@ export async function getProjects(lang: Lang): Promise<CollectionEntry<'projects
   return projects.sort((a, b) => a.data.order - b.data.order);
 }
 
-/** One-line engagement summary shown under a project card title. */
-export function projectMeta(project: CollectionEntry<'projects'>): string | undefined {
-  const parts = [project.data.client, project.data.role, project.data.period];
-  const meta = parts.filter(Boolean).join(' · ');
-  return meta === '' ? undefined : meta;
-}
-
 /** Collect every distinct tag across the published posts. */
 export async function getAllTags(lang: Lang): Promise<string[]> {
   const posts = await getBlogPosts(lang);

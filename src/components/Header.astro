@@ -13,33 +13,28 @@ const lang: Lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const link = (path: string) => `${base}/${lang}${path}`;
+const home = `${base}/${lang}`;
 
+// The site is one page plus the blog. The first three entries are blocks of
+// the home page, written as absolute URLs so they also work from a blog post.
 const items = [
-  { href: link(''),          label: t('nav.home') },
-  { href: link('/services'), label: t('nav.services') },
-  { href: link('/projects'), label: t('nav.projects') },
-  { href: link('/about'),    label: t('nav.about') },
-  { href: link('/blog'),     label: t('nav.blog') },
-  { href: link('/contact'),  label: t('nav.contact') },
+  { href: `${home}/#robotics`, label: t('nav.services') },
+  { href: `${home}/#work`,     label: t('nav.work') },
+  { href: `${home}/#contact`,  label: t('nav.contact') },
+  { href: `${home}/blog`,      label: t('nav.blog'), route: true },
 ];
 
-// Determine the current page so we can mark it in the nav.
 const here = Astro.url.pathname.replace(/\/$/, '');
-const isCurrent = (href: string) => {
-  const target = href.replace(/\/$/, '');
-  if (target === link('')) return here === target;
-  return here === target || here.startsWith(target + '/');
-};
+const onBlog = here === `${home}/blog` || here.startsWith(`${home}/blog/`);
 ---
 
 <header class="site-header">
   <div class="container container--wide site-header__inner">
-    <a class="site-brand" href={link('')}>{t('site.title')}</a>
+    <a class="site-brand" href={`${home}/`}>{t('site.title')}</a>
 
     <nav class="site-nav" aria-label="Primary">
       {items.map((item) => (
-        <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+        <a href={item.href} aria-current={item.route && onBlog ? 'page' : undefined}>
           {item.label}
         </a>
       ))}
