@@ -51,6 +51,15 @@ blocks:
       - Ing. Adam Ligocki, Ph.D. Doctorate in sensor fusion.
       - Thirteen years of engineering. Former CTO of a robotics company.
       - Ostrava and Český Těšín. Czech, Polish and English.
+skills:
+  - title: Robotics and perception
+    items: [Sensor fusion, SLAM and 3D mapping, LiDAR and point clouds, ROS and ROS 2, Autonomous driving]
+  - title: Computer vision and machine learning
+    items: [Deep learning for object detection, PyTorch, YOLO and synthetic-data pipelines, Thermal and multi-modal imaging, "ONNX, TensorRT and CUDA deployment"]
+  - title: Software
+    items: [C++, Rust, Python, CI/CD and release automation, Docker, AI-assisted development]
+  - title: Delivery and leadership
+    items: [MLOps and models in production, Simulation and replay tooling, Embedded firmware on production machines, Technical leadership as CTO]
 contact:
   title: Let us talk
   lines:

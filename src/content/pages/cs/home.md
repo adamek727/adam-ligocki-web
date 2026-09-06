@@ -51,6 +51,15 @@ blocks:
       - Ing. Adam Ligocki, Ph.D. Doktorát ze senzorové fúze.
       - Třináct let praxe. Bývalý CTO robotické firmy.
       - Ostrava a Český Těšín. Česky, polsky a anglicky.
+skills:
+  - title: Robotika a percepce
+    items: [Senzorová fúze, SLAM a 3D mapování, LiDAR a mračna bodů, ROS a ROS 2, Autonomní řízení]
+  - title: Počítačové vidění a strojové učení
+    items: [Hluboké učení pro detekci objektů, PyTorch, YOLO a syntetická data, Termální a multimodální snímky, "Nasazení přes ONNX, TensorRT a CUDA"]
+  - title: Software
+    items: [C++, Rust, Python, CI/CD a automatizace releasů, Docker, Vývoj s pomocí AI]
+  - title: Dodávka a vedení
+    items: [MLOps a modely v produkci, Simulace a přehrávání záznamů, Firmware na produkčních strojích, Technické vedení ve funkci CTO]
 contact:
   title: Ozvěte se
   lines:

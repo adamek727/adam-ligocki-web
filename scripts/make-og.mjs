@@ -9,33 +9,34 @@ import { writeFile } from 'node:fs/promises';
 import sharp from 'sharp';
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <rect width="1200" height="630" fill="#0a1f33"/>
-  <rect x="0" y="0" width="600" height="630" fill="#123a5c"/>
+  <rect width="1200" height="630" fill="#f4f6f9"/>
+  <rect x="0" y="0" width="600" height="630" fill="#dfe8f1"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#2f62c4"/>
 
   <text x="600" y="250" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-        font-size="66" letter-spacing="8" fill="#dfeaf3">ADAM LIGOCKI</text>
+        font-size="66" letter-spacing="8" fill="#0f2136">ADAM LIGOCKI</text>
   <text x="600" y="305" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
-        font-size="23" letter-spacing="6" fill="#93b2c9">SOFTWARE · ROBOTICS · AI AND MACHINE LEARNING</text>
+        font-size="22" letter-spacing="6" fill="#4b5d70">SOFTWARE · ROBOTICS · COMPUTER VISION · MACHINE LEARNING</text>
 
-  <rect x="470" y="350" width="260" height="1" fill="#2f5a7c"/>
+  <rect x="470" y="350" width="260" height="1" fill="#a9bbcd"/>
 
   <text x="260" y="452" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-        font-size="62" fill="#dfeaf3">200</text>
+        font-size="62" fill="#0f2136">200</text>
   <text x="260" y="492" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
-        font-size="19" letter-spacing="4" fill="#93b2c9">MACHINES IN THE FIELD</text>
+        font-size="19" letter-spacing="4" fill="#4b5d70">MACHINES IN THE FIELD</text>
 
   <text x="600" y="452" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-        font-size="62" fill="#dfeaf3">13</text>
+        font-size="62" fill="#0f2136">13</text>
   <text x="600" y="492" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
-        font-size="19" letter-spacing="4" fill="#93b2c9">YEARS OF ENGINEERING</text>
+        font-size="19" letter-spacing="4" fill="#4b5d70">YEARS OF ENGINEERING</text>
 
   <text x="940" y="452" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-        font-size="62" fill="#dfeaf3">Ph.D.</text>
+        font-size="62" fill="#0f2136">Ph.D.</text>
   <text x="940" y="492" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
-        font-size="19" letter-spacing="4" fill="#93b2c9">SENSOR FUSION</text>
+        font-size="19" letter-spacing="4" fill="#4b5d70">SENSOR FUSION</text>
 
   <text x="600" y="575" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
-        font-size="19" letter-spacing="3" fill="#6d8ba3">adamek727.github.io/adam-ligocki-web</text>
+        font-size="19" letter-spacing="3" fill="#7f95aa">adamek727.github.io/adam-ligocki-web</text>
 </svg>`;
 
 const png = await sharp(Buffer.from(svg)).png().toBuffer();

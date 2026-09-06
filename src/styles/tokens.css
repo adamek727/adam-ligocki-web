@@ -69,30 +69,38 @@
   --dur-base: 320ms;
 
   /* ---- The one colour family ------------------------------------------ */
+  /*
+   * Token names are kept from the first, dark version of this design so the
+   * components did not have to change. Read them as roles, not colours:
+   * `--ink` is the strongest block tint, `--deep` a panel tint, `--pale` the
+   * white panel, and `--on-deep` is whatever text sits on a tinted block.
+   * In the light default those are all pale blues with dark navy text.
+   */
   color-scheme: light;
-  --ink:        #0a1f33;  /* deepest, for the tint and the darkest panels */
-  --deep:       #123a5c;  /* the dark panel */
-  --mid:        #1c5480;  /* mid tone inside visuals */
-  --pale:       #dbe6ef;  /* the light panel */
-  --paper:      #eaf0f5;
+  --ink:        #dfe8f1;  /* strongest tint: visuals, header, footer, contact */
+  --deep:       #e9eff5;  /* tinted panel */
+  --mid:        #d4e0ec;  /* numbers band */
+  --pale:       #ffffff;  /* white panel */
+  --paper:      #f4f6f9;
   --bg:            var(--paper);
   --bg-elevated:   #ffffff;
-  --bg-subtle:     var(--pale);
-  --fg:            #16293a;
-  --fg-heading:    #0a1f33;
-  --fg-muted:      #4a6377;
-  --fg-label:      #7591a7;
-  --fg-subtle:     #86a0b3;
-  --on-deep:       #dfeaf3;
-  --on-deep-mut:   #93b2c9;
-  --border:        #c9d8e4;
-  --border-strong: #9db4c7;
-  --accent:        #2c6ea8;
-  --accent-hover:  #17456e;
+  --bg-subtle:     var(--deep);
+  --fg:            #1a2634;
+  --fg-heading:    #0f2136;
+  --fg-muted:      #4b5d70;
+  --fg-label:      #7088a0;
+  --fg-subtle:     #7f95aa;
+  --on-deep:       #0f2136;
+  --on-deep-mut:   #4b5d70;
+  --pattern:       #2f62c4;  /* the generated visuals draw in this */
+  --border:        #d5dee8;
+  --border-strong: #a9bbcd;
+  --accent:        #2f62c4;
+  --accent-hover:  #1f4894;
   --accent-fg:     #ffffff;
-  --code-bg:       #dbe6ef;
-  --selection-bg:  #c2d8ea;
-  --shadow-md:     0 18px 50px rgba(10, 31, 51, 0.18);
+  --code-bg:       #e9eff5;
+  --selection-bg:  #cfe0fb;
+  --shadow-md:     0 18px 50px rgba(15, 33, 54, 0.10);
 }
 
 :root[data-theme="dark"] {
@@ -112,6 +120,7 @@
   --fg-subtle:     #6d8ba3;
   --on-deep:       #dfeaf3;
   --on-deep-mut:   #93b2c9;
+  --pattern:       #dfeaf3;
   --border:        #1d3a52;
   --border-strong: #2f5a7c;
   --accent:        #6aa3d8;

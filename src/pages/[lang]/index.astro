@@ -38,6 +38,7 @@ interface HomeFrontmatter {
   hero: { title: string; lines: string[]; image?: string };
   numbers: { value: string; label: string }[];
   blocks: Block[];
+  skills: { title: string; items: string[] }[];
   contact: { title: string; lines: string[] };
 }
 
@@ -53,7 +54,7 @@ const homePages = import.meta.glob<{ frontmatter: HomeFrontmatter }>(
 const home = homePages[`../../content/pages/${lang}/home.md`];
 if (!home) throw new Error(`Missing src/content/pages/${lang}/home.md`);
 
-const { headline, role, tagline, availability, hero, numbers, blocks, contact } =
+const { headline, role, tagline, availability, hero, numbers, blocks, skills, contact } =
   home.frontmatter;
 
 const clients = await getProjects(lang);
@@ -125,6 +126,20 @@ const asset = (file: string) => `${base}/${file}`;
       </div>
     </section>
   ))}
+
+  <section id="skills" class="skills-band">
+    <div class="container container--wide">
+      <h2 class="block__title work__heading">{t('section.skills')}</h2>
+      <div class="skills">
+        {skills.map((group) => (
+          <div class="skills__group">
+            <h3>{group.title}</h3>
+            <ul>{group.items.map((item) => <li>{item}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
   <section id="work" class="work">
     <div class="container container--wide">
