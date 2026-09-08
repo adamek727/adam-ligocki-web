@@ -12,7 +12,8 @@
     "check": "astro check && astro build && npm run check:links",
     "og": "node scripts/make-og.mjs",
     "astro": "astro",
-    "check:links": "node scripts/check-links.mjs"
+    "check:links": "node scripts/check-links.mjs",
+    "banner": "node scripts/make-banner.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
